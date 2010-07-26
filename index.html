@@ -2,17 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja-JP" lang="ja-JP">
 <head>
 <title>pagebypage</title>
-
-<style type="text/css">
-.book { display: none }
-</style>
-
+<link href="contents/css/pbp.css" media="screen, print" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
 <p>Right-to-Left</p>
 
 <div class="book pbp">
+<span class="title">Sample book vol.1</span>
 <ul>
 <li><img src="contents/flat/1.png" /></li>
 <li><img src="contents/flat/2.png" /></li>
@@ -69,8 +66,8 @@
 <script type="text/javascript">
 $(function() {
   $(".pbp")    .pbp({ width:300, height:400, dir:"<"});
-  $(".pbp-lr") .pbp({ width:300, height:400, duration:400 });
   $(".pbp2")   .pbp({ width:300, height:400, dir:"<", start:2});
+  $(".pbp-lr") .pbp({ width:300, height:400, duration:400 });
   $(".pbp2-lr").pbp({ width:300, height:400, start:2 });
 });
 </script>

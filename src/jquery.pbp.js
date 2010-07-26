@@ -12,16 +12,32 @@ this.each(function(i,target) {
   book.initialize = function(config, target) {
     this.config    = config;
     this.pnum      = 0;
+    this.ptotal    = this.getPTotal(target);
     this.dir       = config.dir == "<" ? [1,0] : [0,1];
     this.direction = config.dir == "<" ? 0 : 1;
     this.width     = config.width  || 230;
     this.height    = config.height || 320;
     this.duration  = config.duration || 100;
+    this.title     = this.getTitle();
 
     this.initPagePair(target);
     this.initContainer(target);
     this.showCurrentPages();
     this.container.show();
+  }
+
+  book.getPTotal = function(target) {
+    var imagesCnt = $(target).find("img").length;
+    var total = imagesCnt / 2;
+    if (this.config.start % 2 != 0) {
+      total ++;
+    }
+    return total;
+  }
+
+  book.getTitle = function() {
+    var title = $(target).find(".title").html();
+    return (title) ? title : "";
   }
   
   book.initContainer = function(target) {
@@ -35,13 +51,29 @@ this.each(function(i,target) {
     this.animations    = []
     this.animations[0] = $("<div style=\"float:left;width:" + this.width + "px;margin-top:-" + this.height + "px;display:inline;\"></div>");
     this.animations[1] = $("<div style=\"float:left;width:" + this.width + "px;margin-top:-" + this.height + "px;margin-left:" + this.width + "px;display:inline;\"></div>");
-    
+   
+    this.container.append(this.makeNavigation());
     this.container.append(this.containers[0]);
     this.container.append(this.containers[1]);
     this.container.append("<br style=\"clear:both\"/>");
     this.container.append(this.animations[0]);
     this.container.append(this.animations[1]);
     // this.container.append("<br style=\"clear:both\"/>");
+
+  }
+
+  book.makeNavigation = function() {
+    var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.width * 2 - 12) + "px\"></div>");
+    component.append("<div class=\"title\">" + this.title + "</div>");
+    component.append("<div class=\"seekbar\">SeekBar</div>");
+    component.append("<div class=\"close\">x</div>");
+    component.append("<div class=\"overlayMode\">o</div>");
+    component.append("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
+
+    var n = $("<div class=\"navigation\" style=\"width:" + this.width * 2 + ";margin-top:" + (this.height - 30) + "px;\"></div>");
+    n.append("<div class=\"navigationBg\" style=\"width:" + this.width * 2 + "px;\"></div>");
+    n.append(component);
+    return n;
   }
   
   book.initPagePair = function(target) {
@@ -72,6 +104,7 @@ this.each(function(i,target) {
       }
     }
   }
+
   
   book.showCurrentPages = function() {
     this.showCurrentHalfPage(0);
@@ -187,6 +220,7 @@ this.each(function(i,target) {
   book.movePage3 = function(lr) {
     this.pnum += (lr == this.direction ? 1 : -1);
     this.showCurrentPages();
+    this.container.find(".pnum").html(this.pnum + 1);
   }
 
   book.initialize(config, target);
