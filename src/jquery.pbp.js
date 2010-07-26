@@ -79,13 +79,16 @@ this.each(function(i,target) {
         } else {
           lr = (moveTo - self.pnum) < 0 ? 1 : 0;
         }
+        var slider = $(this);
         self.pageTurningEndCallback = function() {
           if (self.pnum == moveTo) {
             self.pageTurningEndCallback = null;
+            slider.slider("enable");
             return;
           }
           self.movePage(lr);
         };
+        $(this).slider("disable");
         self.movePage(lr);
       }
     });
