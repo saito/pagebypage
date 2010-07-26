@@ -18,7 +18,7 @@
     background-color:#000;
     height:30px;
     position:absolute;
-    opacity:0.6;
+    opacity:0.7;
 }
 
 .book .navigation .title {
@@ -32,12 +32,12 @@
 }
 
 .ui-slider-handle {
-  width: 8px;
-  height: 14px;
+  width: 14px;
+  height: 15px;
   position: absolute;
-  top: -7px;
-  background: #478AFF;
-  border: solid 1px black;
+  top: -6px;
+  background-image:url(../images/slider_handle.png);
+  background-repeat: no-repeat;
 }
 
 .book .navigation .overlayMode {
@@ -45,5 +45,8 @@
 }
 
 .book .navigation .pageNum {
-    float:left;
+    position: absolute;
+    font-size: small;
+    margin-top: 3px;
+    font-style: italic;
 }

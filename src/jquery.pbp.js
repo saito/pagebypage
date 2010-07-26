@@ -94,10 +94,37 @@ this.each(function(i,target) {
     });
     component.append(slider);
     component.append("<div class=\"overlayMode\">o</div>");
-    component.append("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
+    var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
+    p.css("margin-left", self.width + (200/2) + 12 + "px");
+    component.append(p);
     var n = $("<div class=\"navigation\" style=\"width:" + this.width * 2 + ";margin-top:" + (this.height - 30) + "px;\"></div>");
     n.append("<div class=\"navigationBg\" style=\"width:" + this.width * 2 + "px;\"></div>");
     n.append(component);
+
+    var fadeSemaphore = null;
+    self.lastMoved = +new Date();
+    self.container.bind('mousemove', function() {
+      self.lastMoved = +new Date();
+      n.fadeIn('fast');
+    });
+    self.container.bind('mouseout', function() {
+      fadeSemaphore = setTimeout(function() {
+        n.fadeOut('fast');
+      }, 500);
+    });
+    n.bind('mouseover', function() {
+      if (fadeSemaphore) {
+        clearTimeout(fadeSemaphore);
+      }
+      n.fadeIn('fast');
+    });
+    window.setInterval(function() {
+      var now = +new Date();
+      if (now - self.lastMoved > 2000) {
+        n.fadeOut('fast');
+      }
+    }, 100);
+    
     return n;
   }
   
