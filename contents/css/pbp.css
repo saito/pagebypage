@@ -25,10 +25,13 @@
     float:left;
 }
 
-.book .navigation .seekbar {
-    float:left;
-    /* position:absolute; */
-    margin: 0 30px 0 30px;
+.ui-slider-handle {
+  width: 8px;
+  height: 14px;
+  position: absolute;
+  top: -7px;
+  background: #478AFF;
+  border: solid 1px black;
 }
 
 .book .navigation .close {

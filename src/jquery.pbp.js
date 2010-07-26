@@ -63,13 +63,22 @@ this.each(function(i,target) {
   }
 
   book.makeNavigation = function() {
+    var self = this;
     var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.width * 2 - 12) + "px\"></div>");
     component.append("<div class=\"title\">" + this.title + "</div>");
-    component.append("<div class=\"seekbar\">SeekBar</div>");
-    component.append("<div class=\"close\">x</div>");
+    var slider = $("<div class=\"slider\"></div>");
+    slider.css("width", "200px").css("height", "2px").css("background-color", "#000").css("position", "absolute").css("margin-top", "8px");
+    slider.css("margin-left", (this.width * 2 - 200)/2 + "px");
+    slider.slider({
+      change: function(event, ui) {
+        var moveTo = Math.round((self.ptotal - 1) * (ui.value / 100));
+        self.pnum = moveTo;
+        self.showCurrentPages();
+      }
+    });
+    component.append(slider);
     component.append("<div class=\"overlayMode\">o</div>");
     component.append("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
-
     var n = $("<div class=\"navigation\" style=\"width:" + this.width * 2 + ";margin-top:" + (this.height - 30) + "px;\"></div>");
     n.append("<div class=\"navigationBg\" style=\"width:" + this.width * 2 + "px;\"></div>");
     n.append(component);
@@ -110,6 +119,7 @@ this.each(function(i,target) {
     this.showCurrentHalfPage(0);
     this.showCurrentHalfPage(1);
     this.setPageEventHandler();
+    this.container.find(".pnum").html(this.pnum + 1);
   }
 
   book.showCurrentHalfPage = function(lr) {
@@ -220,7 +230,6 @@ this.each(function(i,target) {
   book.movePage3 = function(lr) {
     this.pnum += (lr == this.direction ? 1 : -1);
     this.showCurrentPages();
-    this.container.find(".pnum").html(this.pnum + 1);
   }
 
   book.initialize(config, target);
