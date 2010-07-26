@@ -71,7 +71,7 @@ this.each(function(i,target) {
     slider.css("width", "200px").css("height", "2px").css("background-color", "#000").css("position", "absolute").css("margin-top", "8px");
     slider.css("margin-left", (this.width * 2 - 200)/2 + "px");
     slider.slider({
-      change: function(event, ui) {
+      stop: function(event, ui) {
         var moveTo = Math.round((self.ptotal - 1) * (ui.value / 100));
         var lr = 0;
         if (self.direction) {
@@ -126,6 +126,12 @@ this.each(function(i,target) {
     }, 100);
     
     return n;
+  }
+
+  book.updateSlider = function(lr) {
+    var p = lr == 0 ? this.pnum - 1 : this.pnum + 1;
+    var value = p / this.ptotal * 100;
+    this.container.find(".slider").slider("value", value);
   }
   
   book.initPagePair = function(target) {
@@ -203,6 +209,7 @@ this.each(function(i,target) {
       var self = this;
       $(p[lr]).bind('click', function() {
         self.movePage(lr);
+        self.updateSlider(lr);
       });
     }
   }
