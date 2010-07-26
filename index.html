@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja-JP" lang="ja-JP">
+<head>
+<title>pagebypage</title>
+
+<style type="text/css">
+.book { display: none }
+</style>
+
+</head>
+<body>
+
+<p>Right-to-Left</p>
+
+<div class="book pbp">
+<ul>
+<li><img src="contents/flat/1.png" /></li>
+<li><img src="contents/flat/2.png" /></li>
+<li><img src="contents/flat/3.png" /></li>
+<li><img src="contents/flat/4.png" /></li>
+<li><img src="contents/flat/5.png" /></li>
+<li><img src="contents/flat/6.png" /></li>
+</ul>
+</div>
+
+<p>Right-to-Left / no cover</p>
+
+<div class="book pbp2">
+<ul>
+<li><img src="contents/flat/1.png" /></li>
+<li><img src="contents/flat/2.png" /></li>
+<li><img src="contents/flat/3.png" /></li>
+<li><img src="contents/flat/4.png" /></li>
+<li><img src="contents/flat/5.png" /></li>
+<li><img src="contents/flat/6.png" /></li>
+</ul>
+</div>
+
+<p>Left-to-Right Slow</p>
+
+<div class="book pbp-lr">
+<ul>
+<li><img src="contents/flat/1.png" /></li>
+<li><img src="contents/flat/2.png" /></li>
+<li><img src="contents/flat/3.png" /></li>
+<li><img src="contents/flat/4.png" /></li>
+<li><img src="contents/flat/5.png" /></li>
+<li><img src="contents/flat/6.png" /></li>
+</ul>
+</div>
+
+<p>Left-to-Right / no cover</p>
+
+<div class="book pbp2-lr">
+<ul>
+<li><img src="contents/flat/1.png" /></li>
+<li><img src="contents/flat/2.png" /></li>
+<li><img src="contents/flat/3.png" /></li>
+<li><img src="contents/flat/4.png" /></li>
+<li><img src="contents/flat/5.png" /></li>
+<li><img src="contents/flat/6.png" /></li>
+</ul>
+</div>
+
+
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">google.load("jquery", "1.3.1");</script>
+<script type="text/javascript" src="src/jquery.pbp.js"></script>
+<script type="text/javascript">
+$(function() {
+  $(".pbp")    .pbp({ width:300, height:400, dir:"<"});
+  $(".pbp-lr") .pbp({ width:300, height:400, duration:400 });
+  $(".pbp2")   .pbp({ width:300, height:400, dir:"<", start:2});
+  $(".pbp2-lr").pbp({ width:300, height:400, start:2 });
+});
+</script>
+
+</body>
+</html>
