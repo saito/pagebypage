@@ -25,6 +25,12 @@
     float:left;
 }
 
+.book .navigation .slider {
+    background-color: #000;
+    position: absolute;
+    margin-top: 8px;
+}
+
 .ui-slider-handle {
   width: 8px;
   height: 14px;
@@ -32,10 +38,6 @@
   top: -7px;
   background: #478AFF;
   border: solid 1px black;
-}
-
-.book .navigation .close {
-    float:right;
 }
 
 .book .navigation .overlayMode {

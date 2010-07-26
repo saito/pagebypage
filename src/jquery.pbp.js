@@ -24,6 +24,7 @@ this.each(function(i,target) {
     this.initContainer(target);
     this.showCurrentPages();
     this.container.show();
+    this.pageTurningEndCallback = null;
   }
 
   book.getPTotal = function(target) {
@@ -72,8 +73,20 @@ this.each(function(i,target) {
     slider.slider({
       change: function(event, ui) {
         var moveTo = Math.round((self.ptotal - 1) * (ui.value / 100));
-        self.pnum = moveTo;
-        self.showCurrentPages();
+        var lr = 0;
+        if (self.direction) {
+          lr = (moveTo - self.pnum) < 0 ? 0 : 1;
+        } else {
+          lr = (moveTo - self.pnum) < 0 ? 1 : 0;
+        }
+        self.pageTurningEndCallback = function() {
+          if (self.pnum == moveTo) {
+            self.pageTurningEndCallback = null;
+            return;
+          }
+          self.movePage(lr);
+        };
+        self.movePage(lr);
       }
     });
     component.append(slider);
@@ -230,6 +243,9 @@ this.each(function(i,target) {
   book.movePage3 = function(lr) {
     this.pnum += (lr == this.direction ? 1 : -1);
     this.showCurrentPages();
+    if (this.pageTurningEndCallback != null) {
+      this.pageTurningEndCallback();
+    }
   }
 
   book.initialize(config, target);
