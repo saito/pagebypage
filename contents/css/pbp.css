@@ -1,0 +1,44 @@
+.book {
+    display: none
+}
+
+.book .navigation {
+    height:30px;
+    position:absolute;
+    font-family: Helvetica, sans-serif;
+}
+
+.book .navigation .navigationComponent {
+    padding: 6px;
+    color: #fff;
+    position: relative;
+}
+
+.book .navigation .navigationBg {
+    background-color:#000;
+    height:30px;
+    position:absolute;
+    opacity:0.6;
+}
+
+.book .navigation .title {
+    float:left;
+}
+
+.book .navigation .seekbar {
+    float:left;
+    /* position:absolute; */
+    margin: 0 30px 0 30px;
+}
+
+.book .navigation .close {
+    float:right;
+}
+
+.book .navigation .overlayMode {
+    float:right;
+}
+
+.book .navigation .pageNum {
+    float:left;
+}
