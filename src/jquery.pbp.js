@@ -19,6 +19,7 @@ this.each(function(i,target) {
     this.height    = config.height || 320;
     this.duration  = config.duration || 100;
     this.title     = this.getTitle();
+    this.browser   = this.getBrowser();
 
     this.initPagePair(target);
     this.initContainer(target);
@@ -40,6 +41,22 @@ this.each(function(i,target) {
     var title = $(target).find(".title").html();
     return (title) ? title : "";
   }
+
+  book.getBrowser = function() {
+    if (navigator.userAgent.match(/iPad/)) {
+      return "ipad";
+    } else if (navigator.userAgent.match(/iPhone/)) {
+      return "iphone";
+    } else if ($.browser.safari) {
+      return "safari";
+    } else if ($.browser.opera) {
+      return "opera";
+    } else if ($.browser.msie) {
+      return "msie";
+    } else if ($.browser.mozilla) {
+      return "mozilla";
+    }
+  }
   
   book.initContainer = function(target) {
     this.container = $(target);
@@ -60,7 +77,6 @@ this.each(function(i,target) {
     this.container.append(this.animations[0]);
     this.container.append(this.animations[1]);
     // this.container.append("<br style=\"clear:both\"/>");
-
   }
 
   book.makeNavigation = function() {
@@ -97,35 +113,53 @@ this.each(function(i,target) {
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
     p.css("margin-left", self.width + (200/2) + 18 + "px");
     component.append(p);
+
     var n = $("<div class=\"navigation\" style=\"width:" + this.width * 2 + ";margin-top:" + (this.height - 30) + "px;\"></div>");
     n.append("<div class=\"navigationBg\" style=\"width:" + this.width * 2 + "px;\"></div>");
     n.append(component);
-
-    var fadeSemaphore = null;
-    self.lastMoved = +new Date();
-    self.container.bind('mousemove', function() {
-      self.lastMoved = +new Date();
-      n.fadeIn('fast');
-    });
-    self.container.bind('mouseout', function() {
-      fadeSemaphore = setTimeout(function() {
-        n.fadeOut('fast');
-      }, 500);
-    });
-    n.bind('mouseover', function() {
-      if (fadeSemaphore) {
-        clearTimeout(fadeSemaphore);
-      }
-      n.fadeIn('fast');
-    });
-    window.setInterval(function() {
-      var now = +new Date();
-      if (now - self.lastMoved > 2000) {
-        n.fadeOut('fast');
-      }
-    }, 100);
-    
+    this.setupNavigationEvents(n);
     return n;
+  }
+
+  book.setupNavigationEvents = function(navigation) {
+    var self = this;
+    if (this.browser != "iphone" && this.browser != "ipad") {
+      var fadeSemaphore = null;
+      self.lastMoved = +new Date();
+      self.container.bind('mousemove', function() {
+        self.lastMoved = +new Date();
+        navigation.fadeIn('fast');
+      });
+      self.container.bind('mouseout', function() {
+        fadeSemaphore = setTimeout(function() {
+          navigation.fadeOut('fast');
+        }, 500);
+      });
+      navigation.bind('mouseover', function() {
+        if (fadeSemaphore) {
+          clearTimeout(fadeSemaphore);
+        }
+        navigation.fadeIn('fast');
+      });
+      window.setInterval(function() {
+        var now = +new Date();
+        if (now - self.lastMoved > 2000) {
+          navigation.fadeOut('fast');
+        }
+      }, 100);
+    } else {
+      var t = $("<div class=\"navigationToggle\"></div>");
+      t.css("width", self.width * 2 / 3 + "px");
+      t.css("height", self.height + "px");
+      t.css("left", self.width * 2 / 3);
+      t.css("position", "absolute");
+      t.toggle(function() {
+        navigation.fadeOut("fast");
+      }, function() {
+        navigation.fadeIn("fast");
+      });
+      self.container.append(t);
+    }
   }
 
   book.updateSlider = function(lr) {
