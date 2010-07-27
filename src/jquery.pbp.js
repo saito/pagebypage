@@ -134,7 +134,7 @@ this.each(function(i,target) {
     });
     component.append(o);
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
-    p.css("margin-left", self.width + (200/2) + 18 + "px");
+    p.css("margin-left", self.currentWidth + (200/2) + 18 + "px");
     component.append(p);
 
     var n = $("<div class=\"navigation\" style=\"width:" + this.currentWidth * 2 + ";margin-top:" + (this.currentHeight - 30) + "px;\"></div>");
