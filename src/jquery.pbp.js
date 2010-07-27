@@ -148,10 +148,13 @@ this.each(function(i,target) {
     var self = this;
     if (this.browser != "iphone" && this.browser != "ipad") {
       var fadeSemaphore = null;
+      var isFading = false;
       self.lastMoved = +new Date();
       self.container.bind('mousemove', function() {
+        if (isFading) return;
+        isFading = true;
         self.lastMoved = +new Date();
-        navigation.fadeIn('fast');
+        navigation.fadeIn('fast', function() { isFading = false; });
       });
       self.container.bind('mouseout', function() {
         fadeSemaphore = setTimeout(function() {
