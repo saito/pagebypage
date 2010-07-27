@@ -1,11 +1,14 @@
 .book {
-    display: none
+    display: none;
+    position: relative;
 }
 
 .book .navigation {
     height:30px;
     position:absolute;
     font-family: Helvetica, sans-serif;
+    left: 0;
+    bottom: 0;
 }
 
 .book .navigation .navigationComponent {
