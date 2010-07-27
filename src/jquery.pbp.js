@@ -10,16 +10,21 @@ this.each(function(i,target) {
   book = new Object();
   
   book.initialize = function(config, target) {
-    this.config    = config;
-    this.pnum      = 0;
-    this.ptotal    = this.getPTotal(target);
-    this.dir       = config.dir == "<" ? [1,0] : [0,1];
-    this.direction = config.dir == "<" ? 0 : 1;
-    this.width     = config.width  || 230;
-    this.height    = config.height || 320;
-    this.duration  = config.duration || 100;
-    this.title     = this.getTitle();
-    this.browser   = this.getBrowser();
+    this.config         = config;
+    this.pnum           = 0;
+    this.ptotal         = this.getPTotal(target);
+    this.dir            = config.dir == "<" ? [1,0] : [0,1];
+    this.direction      = config.dir == "<" ? 0 : 1;
+    this.width          = config.width  || 230;
+    this.height         = config.height || 320;
+    this.originalWidth  = config.originalWidth || 230;
+    this.originalHeight = config.originalHeight || 320;
+    this.duration       = config.duration || 100;
+    this.title          = this.getTitle();
+    this.browser        = this.getBrowser();
+
+    this.currentWidth   = this.width;
+    this.currentHeight  = this.height;
 
     this.initPagePair(target);
     this.initContainer(target);
@@ -62,14 +67,15 @@ this.each(function(i,target) {
     this.container = $(target);
     this.container.empty();
 
-    target.style.width  = (this.width * 2) + "px";
-    target.style.height = this.height      + "px";
+    target.style.width  = (this.currentWidth * 2) + "px";
+    target.style.height = this.currentHeight      + "px";
+
     this.containers    = [];
-    this.containers[0] = $("<div class=\"pbp-page\" style=\"width:" + this.width + "px;float:left;\"></div>");
-    this.containers[1] = $("<div class=\"pbp-page\" style=\"width:" + this.width + "px;float:left;\"></div>");
+    this.containers[0] = $("<div class=\"pbp-page\" style=\"width:" + this.currentWidth + "px;float:left;\"></div>");
+    this.containers[1] = $("<div class=\"pbp-page\" style=\"width:" + this.currentWidth + "px;float:left;\"></div>");
     this.animations    = []
-    this.animations[0] = $("<div style=\"float:left;width:" + this.width + "px;margin-top:-" + this.height + "px;display:inline;\"></div>");
-    this.animations[1] = $("<div style=\"float:left;width:" + this.width + "px;margin-top:-" + this.height + "px;margin-left:" + this.width + "px;display:inline;\"></div>");
+    this.animations[0] = $("<div style=\"float:left;width:" + this.currentWidth + "px;margin-top:-" + this.currentHeight + "px;display:inline;\"></div>");
+    this.animations[1] = $("<div style=\"float:left;width:" + this.currentWidth + "px;margin-top:-" + this.currentHeight + "px;margin-left:" + this.currentWidth + "px;display:inline;\"></div>");
    
     this.container.append(this.makeNavigation(mode));
     this.container.append(this.containers[0]);
@@ -82,7 +88,7 @@ this.each(function(i,target) {
 
   book.makeNavigation = function(mode) {
     var self = this;
-    var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.width * 2 - 12) + "px\"></div>");
+    var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.currentWidth * 2 - 12) + "px\"></div>");
     component.append("<div class=\"title\">" + this.title + "</div>");
     var slider = $("<div class=\"slider\"></div>");
     slider.css({
@@ -92,7 +98,7 @@ this.each(function(i,target) {
       "position": "absolute",
       "margin-top": "8px"
     });
-    slider.css("margin-left", (this.width * 2 - 200)/2 + "px");
+    slider.css("margin-left", (this.currentWidth * 2 - 200)/2 + "px");
     slider.slider({
       stop: function(event, ui) {
         var moveTo = Math.round((self.ptotal - 1) * (ui.value / 100));
@@ -131,8 +137,8 @@ this.each(function(i,target) {
     p.css("margin-left", self.width + (200/2) + 18 + "px");
     component.append(p);
 
-    var n = $("<div class=\"navigation\" style=\"width:" + this.width * 2 + ";margin-top:" + (this.height - 30) + "px;\"></div>");
-    n.append("<div class=\"navigationBg\" style=\"width:" + this.width * 2 + "px;\"></div>");
+    var n = $("<div class=\"navigation\" style=\"width:" + this.currentWidth * 2 + ";margin-top:" + (this.currentHeight - 30) + "px;\"></div>");
+    n.append("<div class=\"navigationBg\" style=\"width:" + this.currentWidth * 2 + "px;\"></div>");
     n.append(component);
     this.setupNavigationEvents(n);
     return n;
@@ -277,9 +283,9 @@ this.each(function(i,target) {
     var d = this.direction;
     var anim;
     if (lr == 0) {
-      anim = {width:"0px", height:this.height + "px" }; //, marginLeft:this.width+ "px"
+      anim = {width:"0px", height:this.currentHeight + "px" }; //, marginLeft:this.width+ "px"
     } else {
-      anim = {width:"0px", height:this.height + "px"};
+      anim = {width:"0px", height:this.currentHeight + "px"};
     }
     var cfront = this.animations[lr];
     var cback  = this.containers[lr];
@@ -294,7 +300,7 @@ this.each(function(i,target) {
     var self = this; // self.width - this.style.width
     var stepFunc = function() {
       if (lr != 0) return;
-      var w  = self.width;
+      var w  = self.currentWidth;
       var w2 = this.style.width;
       w2 = w2.substring(0, w2.length - 2);
       this.style.marginLeft = (w - w2) + "px";
@@ -310,14 +316,14 @@ this.each(function(i,target) {
     var cfront = this.animations[lr2];
     var pfront = this.pages[this.pnum + (lr == this.direction ? 1 : -1)][lr2];
     pfront.style.width = 0;
-    pfront.style.height = this.height + "px";
+    pfront.style.height = this.currentHeight + "px";
 
     var anim;
     if (lr == 0) {
-      anim = {width:this.width + "px", height:this.height + "px" };
+      anim = {width:this.currentWidth + "px", height:this.currentHeight + "px" };
     } else {
-      pfront.style.marginLeft = this.width + "px";
-      anim = {width:this.width + "px", height:this.height + "px" };
+      pfront.style.marginLeft = this.currentWidth + "px";
+      anim = {width:this.currentWidth + "px", height:this.currentHeight + "px" };
     }
 
     cfront.empty();
@@ -326,7 +332,7 @@ this.each(function(i,target) {
     var self = this;
     var stepFunc = function() {
       if (lr == 0) return;
-      var w  = self.width;
+      var w  = self.currentWidth;
       var w2 = this.style.width;
       w2 = w2.substring(0, w2.length - 2);
       this.style.marginLeft = (w - w2) + "px";
@@ -342,9 +348,14 @@ this.each(function(i,target) {
       this.pageTurningEndCallback();
     }
   }
+  
 
   book.overlay = function() {
+    this.currentWidth = this.originalWidth;
+    this.currentHeight = this.originalHeight;
+
     this.addOverlayBg();
+    this.resizeAllPages();
     this.initOverlayContainer();
     this.showCurrentPages();
     this.container.show();
@@ -372,12 +383,32 @@ this.each(function(i,target) {
     var container = $("<div class=\"book overlayContainer\"></div>");
     container.css({
       position: "absolute",
-      left: ($("html").width() - this.width * 2) / 2 + "px",
-      top: $("html").exScrollTop() + ($(window).height() - this.height) / 2 + "px"
+      left: ($("html").width() - this.currentWidth * 2) / 2 + "px",
+      top: $("html").exScrollTop() + ($(window).height() - this.currentHeight) / 2 + "px"
     });
     $("body").append(container);
     this.initContainer(container[0], "overlay");
   }
+
+  book.resizeAllPages = function() {
+    for (var i=0; i<this.pages.length; i++) {
+      var p = this.pages[i];
+      for (var j=0; j<p.length; j++) {
+        $(p[j]).width(this.currentWidth + "px");
+        $(p[j]).height(this.currentHeight + "px");
+      }
+    }
+/*
+    for (var i=0; i<this.animations.length; i++) {
+      var p = this.animations[i];
+      for (var j=0; j<p.length; j++) {
+        $(p[j]).width(this.currentWidth + "px");
+        $(p[j]).height(this.currentHeight + "px");
+      }
+    }
+*/
+  }
+
 
   book.closeOverlay = function() {
     alert('close');
