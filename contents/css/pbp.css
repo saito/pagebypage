@@ -28,6 +28,7 @@
     float:left;
 }
 
+
 .book .navigation .slider {
     background-color: #000;
     position: absolute;
@@ -44,8 +45,16 @@
   background-repeat: no-repeat;
 }
 
-.book .navigation .overlayMode {
+.book .navigation .overlayButton {
     float:right;
+    width: 17px;
+    height: 17px;
+    background-image:url(../images/overlay.png);
+    background-repeat: no-repeat;
+}
+
+.overlayContainer .navigation .overlayButton {
+    background-image:url(../images/closeOverlay.png);
 }
 
 .book .navigation .pageNum {

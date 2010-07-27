@@ -58,9 +58,10 @@ this.each(function(i,target) {
     }
   }
   
-  book.initContainer = function(target) {
+  book.initContainer = function(target, mode) {
     this.container = $(target);
     this.container.empty();
+
     target.style.width  = (this.width * 2) + "px";
     target.style.height = this.height      + "px";
     this.containers    = [];
@@ -70,7 +71,7 @@ this.each(function(i,target) {
     this.animations[0] = $("<div style=\"float:left;width:" + this.width + "px;margin-top:-" + this.height + "px;display:inline;\"></div>");
     this.animations[1] = $("<div style=\"float:left;width:" + this.width + "px;margin-top:-" + this.height + "px;margin-left:" + this.width + "px;display:inline;\"></div>");
    
-    this.container.append(this.makeNavigation());
+    this.container.append(this.makeNavigation(mode));
     this.container.append(this.containers[0]);
     this.container.append(this.containers[1]);
     this.container.append("<br style=\"clear:both\"/>");
@@ -79,12 +80,18 @@ this.each(function(i,target) {
     // this.container.append("<br style=\"clear:both\"/>");
   }
 
-  book.makeNavigation = function() {
+  book.makeNavigation = function(mode) {
     var self = this;
     var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.width * 2 - 12) + "px\"></div>");
     component.append("<div class=\"title\">" + this.title + "</div>");
     var slider = $("<div class=\"slider\"></div>");
-    slider.css("width", "200px").css("height", "2px").css("background-color", "#000").css("position", "absolute").css("margin-top", "8px");
+    slider.css({
+      "width": "200px",
+      "height": "2px",
+      "background-color": "#000",
+      "position": "absolute",
+      "margin-top": "8px"
+    });
     slider.css("margin-left", (this.width * 2 - 200)/2 + "px");
     slider.slider({
       stop: function(event, ui) {
@@ -109,7 +116,17 @@ this.each(function(i,target) {
       }
     });
     component.append(slider);
-    //component.append("<div class=\"overlayMode\">o</div>");
+    var o = $("<div class=\"overlayButton\"></div>");
+    o.css("cursor", "pointer");
+    var self = this;
+    o.bind('mousedown', function() {
+      if (mode == "overlay") {
+        self.closeOverlay();
+      } else {
+        self.overlay();
+      }
+    });
+    component.append(o);
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
     p.css("margin-left", self.width + (200/2) + 18 + "px");
     component.append(p);
@@ -149,10 +166,12 @@ this.each(function(i,target) {
       }, 100);
     } else {
       var t = $("<div class=\"navigationToggle\"></div>");
-      t.css("width", self.width * 2 / 3 + "px");
-      t.css("height", self.height + "px");
-      t.css("left", self.width * 2 / 3);
-      t.css("position", "absolute");
+      t.css({
+        "width": self.width * 2 / 3 + "px",
+        "height": self.height + "px",
+        "left": self.width * 2 / 3,
+        "position": "absolute"
+      });
       t.toggle(function() {
         navigation.fadeOut("fast");
       }, function() {
@@ -322,6 +341,50 @@ this.each(function(i,target) {
     if (this.pageTurningEndCallback != null) {
       this.pageTurningEndCallback();
     }
+  }
+
+  book.overlay = function() {
+    this.addOverlayBg();
+    this.initOverlayContainer();
+    this.showCurrentPages();
+    this.container.show();
+  }
+
+  book.addOverlayBg = function() {
+    var bg = $("<div class=\"overlayBg\">ccc</div>");
+    bg.css({
+      width: $(document).width() + "px",
+      height: $(document).height() + "px",
+      "background-color": "#000",
+      position: "absolute",
+      opacity: 0.9,
+      left: 0,
+      top: 0,
+      margin: 0,
+      padding: 0,
+      display: "none"
+    });
+    $("body").append(bg);
+    bg.fadeIn('fast');
+  }
+
+  book.initOverlayContainer = function() {
+    var container = $("<div class=\"book overlayContainer\"></div>");
+    container.css({
+      position: "absolute",
+      left: ($("html").width() - this.width * 2) / 2 + "px",
+      top: $("html").exScrollTop() + ($(window).height() - this.height) / 2 + "px"
+    });
+    $("body").append(container);
+    this.initContainer(container[0], "overlay");
+  }
+
+  book.closeOverlay = function() {
+    alert('close');
+  }
+
+  $.fn.exScrollTop = function() {
+    return this.attr('tagName')=='HTML' ? $(window).scrollTop() : this.scrollTop();
   }
 
   book.initialize(config, target);
