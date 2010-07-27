@@ -92,49 +92,53 @@ this.each(function(i,target) {
     var self = this;
     var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.currentWidth * 2 - 12) + "px\"></div>");
     component.append("<div class=\"title\">" + this.title + "</div>");
-    var slider = $("<div class=\"slider\"></div>");
-    slider.css({
-      "width": "200px",
-      "height": "2px",
-      "background-color": "#000",
-      "position": "absolute",
-      "margin-top": "8px"
-    });
-    slider.css("margin-left", (this.currentWidth * 2 - 200)/2 + "px");
-    slider.slider({
-      stop: function(event, ui) {
-        var moveTo = Math.round((self.ptotal - 1) * (ui.value / 100));
-        var lr = 0;
-        if (self.direction) {
-          lr = (moveTo - self.pnum) < 0 ? 0 : 1;
-        } else {
-          lr = (moveTo - self.pnum) < 0 ? 1 : 0;
-        }
-        var slider = $(this);
-        self.pageTurningEndCallback = function() {
-          if (self.pnum == moveTo) {
-            self.pageTurningEndCallback = null;
-            slider.slider("enable");
-            return;
+    if (this.browser != "iphone") {
+      var slider = $("<div class=\"slider\"></div>");
+      slider.css({
+	"width": "200px",
+	"height": "2px",
+	"background-color": "#000",
+	"position": "absolute",
+	"margin-top": "8px"
+      });
+      slider.css("margin-left", (this.currentWidth * 2 - 200)/2 + "px");
+      slider.slider({
+	stop: function(event, ui) {
+          var moveTo = Math.round((self.ptotal - 1) * (ui.value / 100));
+          var lr = 0;
+          if (self.direction) {
+            lr = (moveTo - self.pnum) < 0 ? 0 : 1;
+          } else {
+            lr = (moveTo - self.pnum) < 0 ? 1 : 0;
           }
+          var slider = $(this);
+          self.pageTurningEndCallback = function() {
+            if (self.pnum == moveTo) {
+              self.pageTurningEndCallback = null;
+              slider.slider("enable");
+              return;
+            }
+            self.movePage(lr);
+          };
+          $(this).slider("disable");
           self.movePage(lr);
-        };
-        $(this).slider("disable");
-        self.movePage(lr);
-      }
-    });
-    component.append(slider);
-    var o = $("<div class=\"overlayButton\"></div>");
-    o.css("cursor", "pointer");
-    var self = this;
-    o.bind('mousedown', function() {
-      if (mode == "overlay") {
-        self.closeOverlay();
-      } else {
-        self.overlay();
-      }
-    });
-    component.append(o);
+	}
+      });
+      component.append(slider);
+    }
+    if (this.browser != "iphone") {
+      var o = $("<div class=\"overlayButton\"></div>");
+      o.css("cursor", "pointer");
+      var self = this;
+      o.bind('mousedown', function() {
+	if (mode == "overlay") {
+          self.closeOverlay();
+	} else {
+          self.overlay();
+	}
+      });
+      component.append(o);
+    }
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
     p.css("margin-left", self.currentWidth + (200/2) + 18 + "px");
     component.append(p);
@@ -143,6 +147,10 @@ this.each(function(i,target) {
     n.append("<div class=\"navigationBg\" style=\"width:" + this.currentWidth * 2 + "px;\"></div>");
     n.append(component);
     this.setupNavigationEvents(n);
+    if (this.browser == "iphone" || this.browser == "ipad") {
+      n.css("display", "none");
+    }
+
     return n;
   }
 
@@ -184,9 +192,9 @@ this.each(function(i,target) {
         "position": "absolute"
       });
       t.toggle(function() {
-        navigation.fadeOut("fast");
-      }, function() {
         navigation.fadeIn("fast");
+      }, function() {
+        navigation.fadeOut("fast");
       });
       self.container.append(t);
     }

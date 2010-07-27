@@ -61,5 +61,6 @@
     position: absolute;
     font-size: small;
     margin-top: 3px;
+    right: 12px;
     font-style: italic;
 }
