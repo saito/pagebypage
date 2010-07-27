@@ -109,7 +109,7 @@ this.each(function(i,target) {
       }
     });
     component.append(slider);
-    component.append("<div class=\"overlayMode\">o</div>");
+    //component.append("<div class=\"overlayMode\">o</div>");
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
     p.css("margin-left", self.width + (200/2) + 18 + "px");
     component.append(p);
