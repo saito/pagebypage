@@ -95,7 +95,7 @@ this.each(function(i,target) {
     component.append(slider);
     component.append("<div class=\"overlayMode\">o</div>");
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
-    p.css("margin-left", self.width + (200/2) + 12 + "px");
+    p.css("margin-left", self.width + (200/2) + 18 + "px");
     component.append(p);
     var n = $("<div class=\"navigation\" style=\"width:" + this.width * 2 + ";margin-top:" + (this.height - 30) + "px;\"></div>");
     n.append("<div class=\"navigationBg\" style=\"width:" + this.width * 2 + "px;\"></div>");
@@ -129,8 +129,13 @@ this.each(function(i,target) {
   }
 
   book.updateSlider = function(lr) {
-    var p = lr == 0 ? this.pnum - 1 : this.pnum + 1;
-    var value = p / this.ptotal * 100;
+    var p = 0;
+    if (this.direction == 0) {
+      p = (lr == 1) ? this.pnum - 1 : this.pnum + 1;
+    } else {
+      p = (lr == 0) ? this.pnum - 1 : this.pnum + 1;
+    }    
+    var value = p / (this.ptotal - 1) * 100;
     this.container.find(".slider").slider("value", value);
   }
   

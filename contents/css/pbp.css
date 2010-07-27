@@ -36,6 +36,7 @@
   height: 15px;
   position: absolute;
   top: -6px;
+  margin-left: -7px;
   background-image:url(../images/slider_handle.png);
   background-repeat: no-repeat;
 }
