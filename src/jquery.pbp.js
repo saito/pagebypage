@@ -25,6 +25,8 @@ this.each(function(i,target) {
 
     this.currentWidth   = this.width;
     this.currentHeight  = this.height;
+    this.overlayBg      = null;
+    this.target  = target;
 
     this.initPagePair(target);
     this.initContainer(target);
@@ -366,6 +368,7 @@ this.each(function(i,target) {
 
   book.addOverlayBg = function() {
     var bg = $("<div class=\"overlayBg\">ccc</div>");
+    this.overlayBg = bg;
     bg.css({
       width: $(document).width() + "px",
       height: $(document).height() + "px",
@@ -401,21 +404,25 @@ this.each(function(i,target) {
         $(p[j]).height(this.currentHeight + "px");
       }
     }
-/*
-    for (var i=0; i<this.animations.length; i++) {
-      var p = this.animations[i];
-      for (var j=0; j<p.length; j++) {
-        $(p[j]).width(this.currentWidth + "px");
-        $(p[j]).height(this.currentHeight + "px");
-      }
-    }
-*/
   }
 
 
   book.closeOverlay = function() {
-    alert('close');
+    this.currentWidth = this.width;
+    this.currentHeight = this.height;
+    
+    this.closeOverlayContainer();
+    this.overlayBg.fadeOut("fast", function() { $(this).remove() });
+    this.resizeAllPages();
+    this.showCurrentPages();
+    this.container.show();
   }
+
+  book.closeOverlayContainer = function() {
+    $(this.container).remove();
+    this.initContainer(this.target);
+  }
+ 
 
   $.fn.exScrollTop = function() {
     return this.attr('tagName')=='HTML' ? $(window).scrollTop() : this.scrollTop();
