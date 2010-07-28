@@ -27,11 +27,13 @@ this.each(function(i,target) {
     this.currentWidth   = this.width;
     this.currentHeight  = this.height;
     this.overlayBg      = null;
+    this.showCover      = false; 
     this.pageTurningEndCallback = null;
 
     this.initPagePair(target);
 
     if (this.config.start != 2 && $(target).find(".description").length) {
+      this.showCover = true;
       this.initCover();
     } else {
       this.start();
@@ -132,6 +134,14 @@ this.each(function(i,target) {
     this.container.append(this.animations[0]);
     this.container.append(this.animations[1]);
     // this.container.append("<br style=\"clear:both\"/>");
+
+    var self = this;
+    if (this.showCover) {
+      var lr = this.direction == 0 ? 0 : 1;
+      setTimeout(function() {
+	self.movePage(lr);
+      }, 100);
+    }
   }
 
   book.makeNavigation = function(mode) {
