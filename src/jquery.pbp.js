@@ -23,16 +23,25 @@ this.each(function(i,target) {
     this.title          = this.getTitle();
     this.browser        = this.getBrowser();
 
+    this.target  = target;
     this.currentWidth   = this.width;
     this.currentHeight  = this.height;
     this.overlayBg      = null;
-    this.target  = target;
+    this.pageTurningEndCallback = null;
 
     this.initPagePair(target);
-    this.initContainer(target);
+
+    if (this.config.start != 2 && $(target).find(".description").length) {
+      this.initCover();
+    } else {
+      this.start();
+    }
+  }
+
+  book.start = function() {
+    this.initContainer(this.target);
     this.showCurrentPages();
     this.container.show();
-    this.pageTurningEndCallback = null;
   }
 
   book.getPTotal = function(target) {
@@ -63,6 +72,43 @@ this.each(function(i,target) {
     } else if ($.browser.mozilla) {
       return "mozilla";
     }
+  }
+
+
+  book.initCover = function() {
+    var self = this;
+    this.container = $(target);
+    var description = this.container.find(".description");
+    this.container.empty();
+    var firstPage = ((this.pages[0][0] == null) ? this.pages[0][1] : this.pages[0][0]);
+    var coverPage = $("<img src=\"" + $(firstPage).attr("src") + "\" width=\"" + this.currentWidth + "\" height=\"" + this.currentHeight + "\" class=\"cover\" />");
+    this.container.append(coverPage);
+
+    var startButton = $("<div class=\"startButton\">OPEN</div>");
+    startButton.bind("click", function() {
+      description.fadeOut("fast", function() {
+	$(description).remove();
+	if (self.direction == 1) {
+	  $(coverPage).animate(
+	    { "margin-left": self.currentWidth + "px" },
+	    "fast",
+	    "linear",
+	    function() {
+	      self.container.empty();
+	      self.container.hide();
+	      self.start();
+	    }
+	  );
+	} else {
+	  self.container.empty();
+	  self.container.hide();
+	  self.start();
+	}
+      });
+    });
+    description.append(startButton);
+    this.container.append(description);
+    this.container.show();
   }
   
   book.initContainer = function(target, mode) {
