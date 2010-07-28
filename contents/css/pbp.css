@@ -1,5 +1,5 @@
 .book {
-    visibility: hidden;
+    display: none;
     position: relative;
 }
 
@@ -68,17 +68,17 @@
     font-style: italic;
 }
 
-img.cover {
+.book img.cover {
     float: left;
     margin: 0 1em 0 0;
     padding: 0;
 }
 
-.description h1 {
+.book .description h1 {
     margin: 0;
 }
 
-.startButton {
+.book .startButton {
     color: #fff;
     background-color: #c00;
     padding: .3em 1em .3em 1em;

@@ -23,6 +23,7 @@ this.each(function(i,target) {
     this.title          = this.getTitle();
     this.browser        = this.getBrowser();
 
+    this.target  = target;
     this.currentWidth   = this.width;
     this.currentHeight  = this.height;
     this.overlayBg      = null;
@@ -38,10 +39,9 @@ this.each(function(i,target) {
   }
 
   book.start = function() {
-    this.initContainer();
+    this.initContainer(this.target);
     this.showCurrentPages();
-    //this.container.show();
-    this.container.css("visibility", "visible");
+    this.container.show();
   }
 
   book.getPTotal = function(target) {
@@ -74,24 +74,18 @@ this.each(function(i,target) {
     }
   }
 
-  book.initCover = function() {
-    
-    var coverContainer = $("<div></div>");
-    coverContainer.position().top = $(target).position().top;
-    coverContainer.position().left = $(target).position().left;
-    coverContainer.css("position", "absolute");
-    coverContainer.css("top", $(target).position().top + "px");
-    coverContainer.css("left", $(target).position().left + "px");
-    coverContainer.width($(target).width());
 
+  book.initCover = function() {
     var self = this;
-    var description = $(target).find(".description");
+    this.container = $(target);
+    var description = this.container.find(".description");
+    this.container.empty();
     var firstPage = ((this.pages[0][0] == null) ? this.pages[0][1] : this.pages[0][0]);
     var coverPage = $("<img src=\"" + $(firstPage).attr("src") + "\" width=\"" + this.currentWidth + "\" height=\"" + this.currentHeight + "\" class=\"cover\" />");
-    coverContainer.append(coverPage);
+    this.container.append(coverPage);
 
     var startButton = $("<div class=\"startButton\">OPEN</div>");
-    startButton.bind("mousedown", function() {
+    startButton.bind("click", function() {
       description.fadeOut("fast", function() {
 	$(description).remove();
 	if (self.direction == 1) {
@@ -100,23 +94,24 @@ this.each(function(i,target) {
 	    "fast",
 	    "linear",
 	    function() {
-	      coverContainer.remove();
+	      self.container.empty();
+	      self.container.hide();
 	      self.start();
 	    }
 	  );
 	} else {
-	  coverContainer.remove();
+	  self.container.empty();
+	  self.container.hide();
 	  self.start();
 	}
       });
     });
     description.append(startButton);
-
-    coverContainer.append(description);
-    $("body").append(coverContainer);
+    this.container.append(description);
+    this.container.show();
   }
   
-  book.initContainer = function(mode) {
+  book.initContainer = function(target, mode) {
     this.container = $(target);
     this.container.empty();
 
@@ -501,7 +496,7 @@ this.each(function(i,target) {
 
   book.closeOverlayContainer = function() {
     $(this.container).remove();
-    this.initContainer(target);
+    this.initContainer(this.target);
   }
  
   $.fn.exScrollTop = function() {
@@ -509,7 +504,6 @@ this.each(function(i,target) {
   }
 
   book.initialize(config, target);
-  $(target).book = book;
 
 });
  
