@@ -143,6 +143,9 @@ this.each(function(i,target) {
     }
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
     p.css("margin-left", self.currentWidth + (200/2) + 18 + "px");
+    if (this.browser == "iphone") {
+      p.css("right", "12px");
+    }
     component.append(p);
 
     var n = $("<div class=\"navigation\" style=\"width:" + this.currentWidth * 2 + ";margin-top:" + (this.currentHeight - 30) + "px;\"></div>");
@@ -210,6 +213,12 @@ this.each(function(i,target) {
         navigation.fadeOut("fast");
       });
       self.container.append(t);
+
+      // swipe
+      self.container.swipe({
+	swipeLeft: function() { self.movePage(1) },
+	swipeRight: function() { self.movePage(0) },
+      })
     }
   }
 
@@ -413,6 +422,7 @@ this.each(function(i,target) {
       top: $("html").exScrollTop() + ($(window).height() - this.currentHeight) / 2 + "px"
     });
     $("body").append(container);
+    this.container.empty();
     this.initContainer(container[0], "overlay");
   }
 
@@ -454,4 +464,80 @@ this.each(function(i,target) {
 return this;
 };
 
+})(jQuery);
+
+
+
+
+(function($) {
+$.fn.swipe = function(options) {
+    // Default thresholds & swipe functions
+    var defaults = {
+        threshold: {
+            x: 80,
+            y: 40
+        },
+        swipeLeft: function() { alert('swiped left') },
+        swipeRight: function() { alert('swiped right') },
+        preventDefaultEvents: true
+    };
+
+    var options = $.extend(defaults, options);
+
+    if (!this) return false;
+
+    return this.each(function() {
+
+        var me = $(this)
+
+        // Private variables for each element
+        var originalCoord = { x: 0, y: 0 }
+        var finalCoord = { x: 0, y: 0 }
+
+        // Screen touched, store the original coordinate
+        function touchStart(event) {
+            //console.log('Starting swipe gesture...')
+            originalCoord.x = event.targetTouches[0].pageX
+            originalCoord.y = event.targetTouches[0].pageY
+        }
+
+        // Store coordinates as finger is swiping
+        function touchMove(event) {
+            if (defaults.preventDefaultEvents)
+                event.preventDefault();
+            finalCoord.x = event.targetTouches[0].pageX // Updated X,Y coordinates
+            finalCoord.y = event.targetTouches[0].pageY
+        }
+
+        // Done Swiping
+        // Swipe should only be on X axis, ignore if swipe on Y axis
+        // Calculate if the swipe was left or right
+        function touchEnd(event) {
+            //console.log('Ending swipe gesture...')
+            var changeY = originalCoord.y - finalCoord.y
+            if(changeY < defaults.threshold.y && changeY > (defaults.threshold.y*-1)) {
+                changeX = originalCoord.x - finalCoord.x
+
+                if(changeX > defaults.threshold.x) {
+                    defaults.swipeLeft()
+                }
+                if(changeX < (defaults.threshold.x*-1)) {
+                    defaults.swipeRight()
+                }
+            }
+        }
+
+        // Swipe was canceled
+        function touchCancel(event) { 
+            //console.log('Canceling swipe gesture...')
+        }
+
+        // Add gestures to all swipable areas
+        this.addEventListener("touchstart", touchStart, false);
+        this.addEventListener("touchmove", touchMove, false);
+        this.addEventListener("touchend", touchEnd, false);
+        this.addEventListener("touchcancel", touchCancel, false);
+
+    });
+};
 })(jQuery);
