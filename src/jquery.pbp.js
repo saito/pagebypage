@@ -1,14 +1,14 @@
 (function($) {
-$.fn.pbp = function(settings) {
+$.fn.pbp = function(args) {
 
 var config = {start:1, dir:">"};
-if (settings) $.extend(config, settings);
+if (args) $.extend(config, args);
 
 var book;
 this.each(function(i,target) {
 
   book = new Object();
-  
+
   book.initialize = function(config, target) {
     this.config         = config;
     this.pnum           = 0;
@@ -92,40 +92,42 @@ this.each(function(i,target) {
     var self = this;
     var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.currentWidth * 2 - 12) + "px\"></div>");
     component.append("<div class=\"title\">" + this.title + "</div>");
+
     if (this.browser != "iphone") {
-      var slider = $("<div class=\"slider\"></div>");
-      slider.css({
-	"width": "200px",
-	"height": "2px",
-	"background-color": "#000",
-	"position": "absolute",
-	"margin-top": "8px"
-      });
-      slider.css("margin-left", (this.currentWidth * 2 - 200)/2 + "px");
+      var slider = $("<input id=\"slider\" type=\"slider\" class=\"slider\" value=\"0\" />");
+      var sliderContainer = $("<div class=\"sliderContainer\"></div>");
+      sliderContainer.html(slider);
+      component.append(sliderContainer);
       slider.slider({
-	stop: function(event, ui) {
-          var moveTo = Math.round((self.ptotal - 1) * (ui.value / 100));
-          var lr = 0;
+	from: 0,
+	to: this.ptotal - 1,
+	step: 1,
+	round: 0,
+	skin: "round",
+	callback: function(value) {
+	  if (turning) return;
+	  var turning = true;
+	  var lr = 0;
           if (self.direction) {
-            lr = (moveTo - self.pnum) < 0 ? 0 : 1;
+            lr = (value - self.pnum) < 0 ? 0 : 1;
           } else {
-            lr = (moveTo - self.pnum) < 0 ? 1 : 0;
+            lr = (value - self.pnum) < 0 ? 1 : 0;
           }
-          var slider = $(this);
           self.pageTurningEndCallback = function() {
-            if (self.pnum == moveTo) {
+            if (self.pnum == value) {
               self.pageTurningEndCallback = null;
-              slider.slider("enable");
+	      turning = false;
               return;
             }
             self.movePage(lr);
           };
-          $(this).slider("disable");
           self.movePage(lr);
 	}
       });
-      component.append(slider);
+      slider.slider("value", this.pnum);
+      sliderContainer.css("margin-left", (this.currentWidth * 2 - 200)/2 + "px");
     }
+
     if (this.browser != "iphone") {
       var o = $("<div class=\"overlayButton\"></div>");
       o.css("cursor", "pointer");
@@ -186,9 +188,9 @@ this.each(function(i,target) {
     } else {
       var t = $("<div class=\"navigationToggle\"></div>");
       t.css({
-        "width": self.width * 2 / 3 + "px",
-        "height": self.height + "px",
-        "left": self.width * 2 / 3,
+        "width": self.currentWidth * 2 / 3 + "px",
+        "height": self.currentHeight + "px",
+        "left": self.currentWidth * 2 / 3,
         "position": "absolute"
       });
       t.toggle(function() {
@@ -203,12 +205,11 @@ this.each(function(i,target) {
   book.updateSlider = function(lr) {
     var p = 0;
     if (this.direction == 0) {
-      p = (lr == 1) ? this.pnum - 1 : this.pnum + 1;
+      p = (lr == 1) ? this.pnum - 1: this.pnum + 1;
     } else {
-      p = (lr == 0) ? this.pnum - 1 : this.pnum + 1;
-    }    
-    var value = p / (this.ptotal - 1) * 100;
-    this.container.find(".slider").slider("value", value);
+      p = (lr == 0) ? this.pnum - 1: this.pnum + 1;
+    } 
+    this.container.find(".slider").slider("value", p);
   }
   
   book.initPagePair = function(target) {
@@ -431,13 +432,12 @@ this.each(function(i,target) {
     this.initContainer(this.target);
   }
  
-
   $.fn.exScrollTop = function() {
     return this.attr('tagName')=='HTML' ? $(window).scrollTop() : this.scrollTop();
   }
 
   book.initialize(config, target);
-  
+
 });
  
 return this;
