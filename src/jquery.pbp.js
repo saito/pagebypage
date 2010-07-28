@@ -163,6 +163,9 @@ this.each(function(i,target) {
       var isFading = false;
       self.lastMoved = +new Date();
       self.container.bind('mousemove', function() {
+	if (self.browser == 'safari' && +new Date() - self.lastClicked < 500) {
+	  return;
+	}
         if (isFading) return;
         isFading = true;
         self.lastMoved = +new Date();
@@ -185,6 +188,14 @@ this.each(function(i,target) {
           navigation.fadeOut('fast');
         }
       }, 100);
+
+      // safari handles mousedown as mousemove.
+      self.lastClicked = +new Date();
+      if (self.browser == 'safari') {
+	self.container.bind('mousedown', function() {
+	  self.lastClicked = +new Date();
+	});
+      }
     } else {
       var t = $("<div class=\"navigationToggle\"></div>");
       t.css({
