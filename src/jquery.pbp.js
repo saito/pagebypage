@@ -266,6 +266,7 @@ this.each(function(i,target) {
 	});
       }
     } else {
+
       var t = $("<div class=\"navigationToggle\"></div>");
       t.css({
         "width": self.currentWidth * 2 / 3 + "px",
@@ -273,6 +274,7 @@ this.each(function(i,target) {
         "left": self.currentWidth * 2 / 3,
         "position": "absolute"
       });
+
       t.toggle(function() {
         navigation.fadeIn("fast");
       }, function() {
@@ -283,8 +285,8 @@ this.each(function(i,target) {
       // swipe
       self.container.swipe({
 	swipeLeft: function() { self.movePage(1) },
-	swipeRight: function() { self.movePage(0) },
-      })
+	swipeRight: function() { self.movePage(0) }
+      });
     }
   }
 
