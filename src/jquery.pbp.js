@@ -455,6 +455,7 @@ this.each(function(i,target) {
     this.addOverlayBg();
     this.resizeAllPages();
     this.initOverlayContainer();
+    this.setupOverlayEvents();
     this.showCurrentPages();
     this.container.show();
   }
@@ -505,11 +506,23 @@ this.each(function(i,target) {
     }
   }
 
+  book.setupOverlayEvents = function() {
+    var self = this;
+    $("body").bind("keydown", self.overlayKeyEventHandler);
+  }
+
+  book.overlayKeyEventHandler = function(e) {
+    var self = this;
+    if (e.keyCode == 27) {
+      book.closeOverlay();
+    }
+  }
 
   book.closeOverlay = function() {
     this.currentWidth = this.width;
     this.currentHeight = this.height;
-    
+
+    this.teardownOverlayEvents();
     this.closeOverlayContainer();
     this.overlayBg.fadeOut("fast", function() { $(this).remove() });
     this.resizeAllPages();
@@ -520,6 +533,10 @@ this.each(function(i,target) {
   book.closeOverlayContainer = function() {
     $(this.container).remove();
     this.initContainer(target);
+  }
+
+  book.teardownOverlayEvents = function() {
+    $("body").unbind("keydown", this.overlayKeyEventHandler);
   }
  
   $.fn.exScrollTop = function() {
