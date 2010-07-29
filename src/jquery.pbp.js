@@ -79,12 +79,11 @@ this.each(function(i,target) {
 
   book.initCover = function() {
     var self = this;
-    this.container = $(target);
-    var description = this.container.find(".description");
-    this.container.empty();
+    var container = $("<div></div>");
+    var description = $(target).find(".description");
     var firstPage = ((this.pages[0][0] == null) ? this.pages[0][1] : this.pages[0][0]);
     var coverPage = $("<img src=\"" + $(firstPage).attr("src") + "\" width=\"" + this.currentWidth + "\" height=\"" + this.currentHeight + "\" class=\"cover\" />");
-    this.container.append(coverPage);
+    container.append(coverPage);
 
     var startButton = $("<div class=\"startButton\">OPEN</div>");
     startButton.bind("click", function() {
@@ -96,21 +95,19 @@ this.each(function(i,target) {
 	    "fast",
 	    "linear",
 	    function() {
-	      self.container.empty();
-	      self.container.hide();
+	      container.remove();
 	      self.start();
 	    }
 	  );
 	} else {
-	  self.container.empty();
-	  self.container.hide();
+	  container.remove();
 	  self.start();
 	}
       });
     });
     description.append(startButton);
-    this.container.append(description);
-    this.container.show();
+    container.append(description);
+    container.insertBefore($(target));
   }
   
   book.initContainer = function(target, mode) {
