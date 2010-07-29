@@ -478,7 +478,8 @@ this.each(function(i,target) {
   }
 
   book.initOverlayContainer = function() {
-    var container = $("<div class=\"book overlayContainer\"></div>");
+    var container = this.container.clone();
+    container.addClass("overlayContainer");
     container.css({
       position: "absolute",
       left: ($("html").width() - this.currentWidth * 2) / 2 + "px",
