@@ -22,7 +22,6 @@ this.each(function(i,target) {
     this.duration       = config.duration || 100;
     this.title          = this.getTitle();
 
-    this.target  = target;
     this.currentWidth   = this.width;
     this.currentHeight  = this.height;
     this.overlayBg      = null;
@@ -40,7 +39,7 @@ this.each(function(i,target) {
   }
 
   book.start = function() {
-    this.initContainer(this.target);
+    this.initContainer(target);
     this.showCurrentPages();
     this.container.show();
   }
@@ -496,7 +495,7 @@ this.each(function(i,target) {
 
   book.closeOverlayContainer = function() {
     $(this.container).remove();
-    this.initContainer(this.target);
+    this.initContainer(target);
   }
  
   $.fn.exScrollTop = function() {
