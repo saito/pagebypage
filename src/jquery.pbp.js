@@ -25,6 +25,7 @@ this.each(function(i,target) {
     this.currentWidth   = this.width;
     this.currentHeight  = this.height;
     this.overlayBg      = null;
+    this.cover          = null;
     this.showCover      = false; 
     this.pageTurningEndCallback = null;
 
@@ -78,24 +79,24 @@ this.each(function(i,target) {
     description.append(startButton);
     container.append(description);
     container.insertBefore($(target));
+    this.cover = container;
   }
 
   book.setupCoverEvents = function(container, description, coverPage) {
     var self = this;
     description.fadeOut("fast", function() {
-      description.remove();
       if (self.direction == 1) {
 	$(coverPage).animate(
 	  { "margin-left": self.currentWidth + "px" },
 	  "fast",
 	  "linear",
 	  function() {
-	    container.remove();
+	    container.hide();
 	    self.start();
 	  }
 	);
       } else {
-	container.remove();
+	container.hide();
 	self.start();
       }
     });
@@ -440,6 +441,29 @@ this.each(function(i,target) {
     this.showCurrentPages();
     if (this.pageTurningEndCallback != null) {
       this.pageTurningEndCallback();
+    }
+
+    if (this.isFirstPage(lr) && this.showCover) {
+      this.showCoverAgain();
+    }
+  }
+
+  book.showCoverAgain = function() {
+    this.container.hide();
+    this.cover.show();
+    var coverPage = this.cover.find("img");
+    var description = this.cover.find(".description");
+    if (this.direction == 1) {
+      $(coverPage).animate(
+	{ "margin-left": "0px" },
+	"fast",
+	"linear",
+	function() {
+	  description.fadeIn("fast");
+	}
+      );
+    } else {
+      description.fadeIn("fast");
     }
   }
   
