@@ -82,32 +82,42 @@ this.each(function(i,target) {
     var container = $("<div></div>");
     var description = $(target).find(".description");
     var firstPage = ((this.pages[0][0] == null) ? this.pages[0][1] : this.pages[0][0]);
+
     var coverPage = $("<img src=\"" + $(firstPage).attr("src") + "\" width=\"" + this.currentWidth + "\" height=\"" + this.currentHeight + "\" class=\"cover\" />");
+    coverPage.bind("click", function() {
+      self.setupCoverEvents(container, description, coverPage);
+    });
     container.append(coverPage);
 
     var startButton = $("<div class=\"startButton\">OPEN</div>");
     startButton.bind("click", function() {
-      description.fadeOut("fast", function() {
-	$(description).remove();
-	if (self.direction == 1) {
-	  $(coverPage).animate(
-	    { "margin-left": self.currentWidth + "px" },
-	    "fast",
-	    "linear",
-	    function() {
-	      container.remove();
-	      self.start();
-	    }
-	  );
-	} else {
-	  container.remove();
-	  self.start();
-	}
-      });
+      self.setupCoverEvents(container, description, coverPage);
     });
+
     description.append(startButton);
     container.append(description);
     container.insertBefore($(target));
+  }
+
+  book.setupCoverEvents = function(container, description, coverPage) {
+    var self = this;
+    description.fadeOut("fast", function() {
+      description.remove();
+      if (self.direction == 1) {
+	$(coverPage).animate(
+	  { "margin-left": self.currentWidth + "px" },
+	  "fast",
+	  "linear",
+	  function() {
+	    container.remove();
+	    self.start();
+	  }
+	);
+      } else {
+	container.remove();
+	self.start();
+      }
+    });
   }
   
   book.initContainer = function(target, mode) {
