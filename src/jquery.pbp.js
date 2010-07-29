@@ -267,12 +267,7 @@ this.each(function(i,target) {
   }
 
   book.updateSlider = function(lr) {
-    var p = 0;
-    if (this.direction == 0) {
-      p = (lr == 1) ? this.pnum - 1: this.pnum + 1;
-    } else {
-      p = (lr == 0) ? this.pnum - 1: this.pnum + 1;
-    } 
+    var p = (lr == this.direction * 1) ? this.pnum + 1: this.pnum - 1;
     this.container.find(".slider").slider("value", p);
   }
   
