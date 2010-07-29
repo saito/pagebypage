@@ -123,6 +123,15 @@ this.each(function(i,target) {
     this.container.append(this.animations[1]);
     // this.container.append("<br style=\"clear:both\"/>");
 
+    // XXX can tweak styles only after appended
+    if ($.browser.ipad) {
+      $(".jslider-pointer").css("width", "25px");
+      $(".jslider-pointer").css("height", "25px");
+      $(".jslider-pointer").css("background-position", "-46px -35px");
+      $(".jslider-pointer").css("top", "-9px");
+      $(".jslider-pointer").css("top", "-9px");
+    }
+
     var self = this;
     if (this.showCover) {
       var lr = this.direction == 0 ? 0 : 1;
@@ -190,15 +199,24 @@ this.each(function(i,target) {
     }
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
     p.css("margin-left", self.currentWidth + (200/2) + 18 + "px");
-    if ($.browser.iphone) {
-      p.css("right", "12px");
-    }
     component.append(p);
 
     var n = $("<div class=\"navigation\" style=\"width:" + this.currentWidth * 2 + ";margin-top:" + (this.currentHeight - 30) + "px;\"></div>");
-    n.append("<div class=\"navigationBg\" style=\"width:" + this.currentWidth * 2 + "px;\"></div>");
+    var nbg = $("<div class=\"navigationBg\" style=\"width:" + this.currentWidth * 2 + "px;\"></div>");
+    n.append(nbg);
     n.append(component);
     this.setupNavigationEvents(n);
+
+
+    if ($.browser.ipad) {
+      nbg.css("height", "45px");
+      n.css("height", "45px");
+      component.css("padding", "14px");
+      o.css("margin-right", "14px");
+    }
+    if ($.browser.iphone) {
+      p.css("right", "12px");
+    }
     if ($.browser.iphone || $.browser.ipad) {
       n.css("display", "none");
     }
