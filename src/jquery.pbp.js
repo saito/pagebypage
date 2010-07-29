@@ -21,7 +21,6 @@ this.each(function(i,target) {
     this.originalHeight = config.originalHeight || 320;
     this.duration       = config.duration || 100;
     this.title          = this.getTitle();
-    this.browser        = this.getBrowser();
 
     this.target  = target;
     this.currentWidth   = this.width;
@@ -59,23 +58,6 @@ this.each(function(i,target) {
     var title = $(target).find(".title").html();
     return (title) ? title : "";
   }
-
-  book.getBrowser = function() {
-    if (navigator.userAgent.match(/iPad/)) {
-      return "ipad";
-    } else if (navigator.userAgent.match(/iPhone/)) {
-      return "iphone";
-    } else if ($.browser.safari) {
-      return "safari";
-    } else if ($.browser.opera) {
-      return "opera";
-    } else if ($.browser.msie) {
-      return "msie";
-    } else if ($.browser.mozilla) {
-      return "mozilla";
-    }
-  }
-
 
   book.initCover = function() {
     var self = this;
@@ -156,7 +138,7 @@ this.each(function(i,target) {
     var component = $("<div class=\"navigationComponent\" style=\"width:" + (this.currentWidth * 2 - 12) + "px\"></div>");
     component.append("<div class=\"title\">" + this.title + "</div>");
 
-    if (this.browser != "iphone") {
+    if (!$.browser.iphone) {
       var slider = $("<input id=\"slider\" type=\"slider\" class=\"slider\" value=\"0\" />");
       var sliderContainer = $("<div class=\"sliderContainer\"></div>");
       sliderContainer.html(slider);
@@ -191,7 +173,7 @@ this.each(function(i,target) {
       sliderContainer.css("margin-left", (this.currentWidth * 2 - 200)/2 + "px");
     }
 
-    if (this.browser != "iphone") {
+    if (!$.browser.iphone) {
       var o = $("<div class=\"overlayButton\"></div>");
       o.css("cursor", "pointer");
       var self = this;
@@ -206,7 +188,7 @@ this.each(function(i,target) {
     }
     var p = $("<div class=\"pageNum\"><span class=\"pnum\">" + (this.pnum + 1) + "</span>/" + this.ptotal + "</div>");
     p.css("margin-left", self.currentWidth + (200/2) + 18 + "px");
-    if (this.browser == "iphone") {
+    if ($.browser.iphone) {
       p.css("right", "12px");
     }
     component.append(p);
@@ -215,7 +197,7 @@ this.each(function(i,target) {
     n.append("<div class=\"navigationBg\" style=\"width:" + this.currentWidth * 2 + "px;\"></div>");
     n.append(component);
     this.setupNavigationEvents(n);
-    if (this.browser == "iphone" || this.browser == "ipad") {
+    if ($.browser.iphone || $.browser.ipad) {
       n.css("display", "none");
     }
 
@@ -224,12 +206,12 @@ this.each(function(i,target) {
 
   book.setupNavigationEvents = function(navigation) {
     var self = this;
-    if (this.browser != "iphone" && this.browser != "ipad") {
+    if (!$.browser.iphone && !$.browser.ipad) {
       var fadeSemaphore = null;
       var isFading = false;
       self.lastMoved = +new Date();
       self.container.bind('mousemove', function() {
-	if (self.browser == 'safari' && +new Date() - self.lastClicked < 500) {
+	if ($.browser.safari && +new Date() - self.lastClicked < 500) {
 	  return;
 	}
         if (isFading) return;
@@ -257,7 +239,7 @@ this.each(function(i,target) {
 
       // safari handles mousedown as mousemove.
       self.lastClicked = +new Date();
-      if (self.browser == 'safari') {
+      if ($.browser.safari) {
 	self.container.bind('mousedown', function() {
 	  self.lastClicked = +new Date();
 	});
@@ -530,7 +512,20 @@ return this;
 
 })(jQuery);
 
-
+(function($) {
+  if (navigator.userAgent.match(/iPad/)) {
+    $.browser.ipad = true;
+    $.browser.iphone = false;
+    $.browser.safari = false;
+  } else if (navigator.userAgent.match(/iPhone/)) {
+    $.browser.ipad = false;
+    $.browser.iphone = true;
+    $.browser.safari = false;
+  } else {
+    $.browser.ipad = false;
+    $.browser.iphone = false;
+  }
+})(jQuery);
 
 
 (function($) {
