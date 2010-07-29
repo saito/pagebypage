@@ -148,6 +148,9 @@ this.each(function(i,target) {
 	step: 1,
 	round: 0,
 	skin: "round",
+	onstatechange: function(value) {
+	  self.updatePageIndication(parseInt(value) + 1);
+	},
 	callback: function(value) {
 	  if (turning) return;
 	  var turning = true;
@@ -305,7 +308,7 @@ this.each(function(i,target) {
     this.showCurrentHalfPage(0);
     this.showCurrentHalfPage(1);
     this.setPageEventHandler();
-    this.container.find(".pnum").html(this.pnum + 1);
+    this.updatePageIndication(this.pnum + 1);
   }
 
   book.showCurrentHalfPage = function(lr) {
@@ -422,6 +425,10 @@ this.each(function(i,target) {
     }
   }
   
+  book.updatePageIndication = function(num) {
+    this.container.find(".pnum").html(num);
+  }
+
 
   book.overlay = function() {
     this.currentWidth = this.originalWidth;
