@@ -70,7 +70,7 @@ this.each(function(i,target) {
     });
     container.append(coverPage);
 
-    var startButton = $("<div class=\"startButton\">OPEN</div>");
+    var startButton = $("<div class=\"startButton\">Read</div>");
     startButton.bind("click", function() {
       self.setupCoverEvents(container, description, coverPage);
     });
@@ -460,6 +460,7 @@ this.each(function(i,target) {
   }
 
   book.addOverlayBg = function() {
+    var self = this;
     var bg = $("<div class=\"overlayBg\">ccc</div>");
     this.overlayBg = bg;
     bg.css({
@@ -473,6 +474,9 @@ this.each(function(i,target) {
       margin: 0,
       padding: 0,
       display: "none"
+    });
+    bg.click(function() {
+      self.closeOverlay();
     });
     $("body").append(bg);
     bg.fadeIn('fast');
