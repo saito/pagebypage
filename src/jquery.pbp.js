@@ -28,6 +28,7 @@ this.each(function(i,target) {
     this.cover          = null;
     this.showCover      = false; 
     this.pageTurningEndCallback = null;
+    this.mode           = "normal";
 
     this.initPagePair(target);
 
@@ -445,7 +446,7 @@ this.each(function(i,target) {
       this.pageTurningEndCallback();
     }
 
-    if (this.isFirstPage(lr) && this.showCover) {
+    if (this.isFirstPage(lr) && this.showCover && this.mode != "overlay") {
       this.showCoverAgain();
     }
   }
@@ -484,6 +485,7 @@ this.each(function(i,target) {
     this.setupOverlayEvents();
     this.showCurrentPages();
     this.container.show();
+    this.mode = "overlay";
   }
 
   book.addOverlayBg = function() {
@@ -554,6 +556,7 @@ this.each(function(i,target) {
     this.resizeAllPages();
     this.showCurrentPages();
     this.container.show();
+    this.mode = "normal";
   }
 
   book.closeOverlayContainer = function() {
